@@ -1,17 +1,18 @@
 # Computing and applying a linear minimum-norm inverse method on evoked/raw/epochs data
 
 # Import necessary libraries and functions
+from mne.minimum_norm import apply_inverse_epochs
+from mne.minimum_norm import make_inverse_operator, apply_inverse
+from mne.datasets import sample, eegbci, fetch_fsaverage
+import mne
+import matplotlib.pyplot as plt
 import os
 import os.path as op
 import numpy as np
 import matplotlib
 matplotlib.use('Qt5Agg')  # Setting the backend BEFORE importing pyplot
-import matplotlib.pyplot as plt
 
-import mne
 mne.viz.set_3d_backend("pyvista")
-from mne.datasets import sample, eegbci, fetch_fsaverage
-from mne.minimum_norm import make_inverse_operator, apply_inverse
 
 #################################################################################
 # Adult template MRI (fsaverage)
@@ -31,7 +32,7 @@ bem = op.join(fs_dir, "bem", "fsaverage-5120-5120-5120-bem-sol.fif")
 # Process EEG data
 
 # Load epoched data
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
+output_dir = r'../data/in'  # Replace with your desired output directory
 subj = '101'  # --> replace participant ID here
 epoched_file = os.path.join(output_dir, subj + '_epoched.fif')
 epochs = mne.read_epochs(epoched_file)
@@ -44,7 +45,7 @@ epochs.drop_channels(channels_to_drop)
 
 # Adjust EEG electrode locations to match the fsaverage template, which are already in fsaverage's
 # # space (MNI space) for standard_1020
-montage_path = r"C:\Users\cerna\Downloads\MATLAB\MFPRL_UPDATED_V2.sfp"
+montage_path = r"../data/in/MFPRL_UPDATED_V2.sfp"
 montage = mne.channels.read_custom_montage(montage_path)
 epochs.set_montage(montage)
 epochs.set_eeg_reference(projection=True)  # needed for inverse modeling
@@ -101,7 +102,7 @@ trans = trans
 
 # Create a new 3D figure and plot red dots at the dipole locations (run all code below at once)
 fig = mne.viz.create_3d_figure(size=(600, 400))
-mne.viz.plot_alignment( # Plot the cortical surface on the figure
+mne.viz.plot_alignment(  # Plot the cortical surface on the figure
     subject=subject,
     subjects_dir=subjects_dir,
     trans=trans,
@@ -109,7 +110,7 @@ mne.viz.plot_alignment( # Plot the cortical surface on the figure
     coord_frame="mri",
     fig=fig,
 )
-mne.viz.plot_dipole_locations( # Plot the dipoles on the same figure
+mne.viz.plot_dipole_locations(  # Plot the dipoles on the same figure
     dipoles=dipoles,
     trans=trans,
     mode="sphere",
@@ -119,25 +120,28 @@ mne.viz.plot_dipole_locations( # Plot the dipoles on the same figure
     scale=7e-4,
     fig=fig,
 )
-mne.viz.set_3d_view(figure=fig, azimuth=180, distance=0.25) # Adjust the view
+mne.viz.set_3d_view(figure=fig, azimuth=180, distance=0.25)  # Adjust the view
 
 # Save the computed forward solution to a .fif file
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
-forward_solution_file = os.path.join(output_dir, subj + '_forwardsolution_MRItemplate.fif')
+output_dir = r'../data/out'  # Replace with your desired output directory
+forward_solution_file = os.path.join(
+    output_dir, subj + '_forwardsolution_MRItemplate.fif')
 mne.write_forward_solution(forward_solution_file, fwd, overwrite=True)
 
 #################################################################################
 # Inverse modeling: eLORETA on evoked data with dipole orientation discarded (pick_ori="None"), only magnitude kept
 
-from mne.minimum_norm import apply_inverse_epochs
 
 # Create a loose-orientation inverse operator, with depth weighting
-inv = make_inverse_operator(epochs.info, fwd, noise_cov, fixed=False, loose=0.2, depth=0.8, verbose=True)
+inv = make_inverse_operator(
+    epochs.info, fwd, noise_cov, fixed=False, loose=0.2, depth=0.8, verbose=True)
 
 # Compute eLORETA solution for each epoch
 snr = 3.0
 lambda2 = 1.0 / snr**2
-stcs = apply_inverse_epochs(epochs, inv, lambda2, "eLORETA", verbose=True, pick_ori=None) # pick_ori="None" --> Discard dipole orientation, only keep magnitude
+# pick_ori="None" --> Discard dipole orientation, only keep magnitude
+stcs = apply_inverse_epochs(
+    epochs, inv, lambda2, "eLORETA", verbose=True, pick_ori=None)
 
 # Average the source estimates across epochs
 stc_avg = sum(stcs) / len(stcs)
@@ -169,11 +173,11 @@ ax.plot(1e3 * stc_avg.times, avg_data)
 ax.set(xlabel="time (ms)", ylabel="eLORETA value (average)")
 plt.show()
 
+
+print('Saving file')
 # Save the inverse solution data
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
+output_dir = r'../data/out'  # Replace with your desired output directory
 for idx, stc in enumerate(stcs):
-    inverse_solution_file = os.path.join(output_dir, f"{subj}_inversesolution_epoch{idx}.fif")
+    inverse_solution_file = os.path.join(
+        output_dir, f"{subj}_inversesolution_epoch{idx}.fif")
     stc.save(inverse_solution_file, overwrite=True)
-
-
-

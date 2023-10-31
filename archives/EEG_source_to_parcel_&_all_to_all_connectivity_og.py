@@ -28,23 +28,26 @@ subj = '101'  # Replace with your subject ID
 schaefer_atlas = datasets.fetch_atlas_schaefer_2018(n_rois=100)
 
 # Load the source space for both hemispheres
-fs_dir = fetch_fsaverage(verbose=True)
-
-fname = '../data/in/fsaverage/bem/fsaverage-ico-5-src.fif'
+fs_dir = '../data/in/fsaverage'
+fname = os.path.join(fs_dir, "bem", "fsaverage-ico-5-src.fif")
 src = mne.read_source_spaces(fname, patch_stats=False, verbose=None)
 
 # Load inverse solution file paths for both left and right hemispheres
 inverse_solution_files_lh = output_dir + \
-    '/' f"{subj}_inversesolution_epoch*.fif-lh.stc"
+    f"{subj}_inversesolution_epoch*.fif-lh.stc"
 inverse_solution_files_rh = output_dir + \
-    '/' f"{subj}_inversesolution_epoch*.fif-rh.stc"
+    f"{subj}_inversesolution_epoch*.fif-rh.stc"
+
+
+print(inverse_solution_files_lh)
+print(inverse_solution_files_rh)
+ans = input('Breakppoint')
 # Calculate the total number of inverse solution files for both hemispheres
 total_files_lh = len(inverse_solution_files_lh)
 total_files_rh = len(inverse_solution_files_rh)
 
 # Calculate the batch size for both hemispheres
 # Change 10 to your desired batch size
-
 batch_size_lh = total_files_lh // (total_files_lh // 10)
 # Change 10 to your desired batch size
 batch_size_rh = total_files_rh // (total_files_rh // 10)
@@ -76,7 +79,7 @@ for i in range(0, total_files_lh, batch_size_lh):
 
 # Load labels from the atlas
 labels = mne.read_labels_from_annot('fsaverage', parc='Schaefer2018_100Parcels_7Networks_order',
-                                    subjects_dir=r'../data/in/')
+                                    subjects_dir=r'C:\Users\cerna\mne_data\MNE-fsaverage-data')
 
 # Extract label time courses for both hemispheres
 label_time_courses = []  # Initialize a list to store label time courses
@@ -87,7 +90,6 @@ for idx, (stc_lh, stc_rh) in enumerate(zip(stcs_lh, stcs_rh)):
         label_tc_rh = stc_rh.extract_label_time_course(
             labels, src=src, mode='mean_flip')
         label_time_courses.extend([label_tc_lh, label_tc_rh])
-
     except Exception as e:
         print(f"Error extracting label time courses for iteration {idx}: {e}")
 else:  # This block will execute if the for loop completes without encountering a break statement
@@ -102,14 +104,14 @@ label_time_courses_np = np.array(label_time_courses)
 # label_time_courses_df.to_csv(os.path.join(output_dir, f"{subj}_label_time_courses.csv"), index=False)
 
 # Save the label time courses as a .npy file
-output_dir = r'../data/out'  # Replace with your
-label_time_courses_file = output_dir + '/' + f"{subj}_label_time_courses.npy"
+# Replace with your desired output directory
+output_dir = r'C:\Users\cerna\Downloads'
+label_time_courses_file = os.path.join(
+    output_dir, f"{subj}_label_time_courses.npy")
 np.save(label_time_courses_file, label_time_courses_np)
 
 ########################################################################################################################
 
-
-print(label_time_courses)
 # Plotting Time Courses
 random_idx = np.random.randint(len(label_time_courses))
 random_time_course = label_time_courses[random_idx]
@@ -168,16 +170,18 @@ plt.show()
 # All-to-all connectivity analysis
 
 # Set your output directory
-output_dir = r'../data/out'  # Replace with your desired output directory
+# Replace with your desired output directory
+output_dir = r'C:\Users\cerna\Downloads'
 subj = '101'  # Replace with your subject ID
 
 # Load the label time courses
-label_time_courses_file = output_dir + '/' f"{subj}_label_time_courses.npy"
+label_time_courses_file = os.path.join(
+    output_dir, f"{subj}_label_time_courses.npy")
 label_time_courses = np.load(label_time_courses_file)
 
 # Load labels from the atlas
 labels = mne.read_labels_from_annot('fsaverage', parc='Schaefer2018_100Parcels_7Networks_order',
-                                    subjects_dir=r'../data/in/fsaverage')
+                                    subjects_dir=r'C:\Users\cerna\mne_data\MNE-fsaverage-data')
 
 # Group labels by network
 networks = {}

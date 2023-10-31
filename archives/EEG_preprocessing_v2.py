@@ -12,6 +12,13 @@ Created on Thu Jun 22 12:58:18 2023
 #################################################################################
 
 # Import necessary Python modules
+from sklearn.decomposition import PCA
+from mne_icalabel import label_components
+from mne.preprocessing import ICA
+import copy  # This is a Python module that allows you to copy objects without changing the original object
+from scipy import signal
+import sklearn as sk
+import matplotlib.pyplot as plt
 import os
 import matplotlib
 import mne
@@ -19,17 +26,14 @@ import numpy as np
 from scipy.stats import zscore
 
 matplotlib.use('Qt5Agg')  # or 'TkAgg', depending on your system
-import matplotlib.pyplot as plt
-import sklearn as sk
-from scipy import signal
-#BELOW IS AN EXAMPLE - REPLACE WITH REAL DATA
+# BELOW IS AN EXAMPLE - REPLACE WITH REAL DATA
 # Source of adapted code below (reference if needed):
 # https://iq.opengenus.org/eeg-signal-analysis-with-python/
 
 #################################################################################
 
 # Define the path to your EEG data
-subj_data_path = 'C:/Users/cerna/Downloads'  #replace with your directory where you saved EEG data
+subj_data_path = '../data/in'  # replace with your directory where you saved EEG data
 fname = 'TCOA_101_EC'  # --> replace file name here
 subj = '101'  # --> replace participant ID here
 file_path = os.path.join(subj_data_path, fname + '.vhdr')
@@ -56,12 +60,13 @@ print(EEG.info)
 #################################################################################
 
 # Read the custom montage
-montage_path = r"C:\Users\cerna\Downloads\MATLAB\MFPRL_UPDATED_V2.sfp"
+montage_path = r"../data/in/MFPRL_UPDATED_V2.sfp"
 montage = mne.channels.read_custom_montage(montage_path)
 
 # Define the map of channel names using the provided keys
 ch_map = {'Ch1': 'Fp1', 'Ch2': 'Fz', 'Ch3': 'F3', 'Ch4': 'F7', 'Ch5': 'LHEye', 'Ch6': 'FC5',
-          'Ch7': 'FC1', 'Ch8': 'C3', 'Ch9': 'T7', 'Ch10': 'GND', 'Ch11': 'CP5', 'Ch12': 'CP1', # Setting FPz as GND so it matches montage
+          # Setting FPz as GND so it matches montage
+          'Ch7': 'FC1', 'Ch8': 'C3', 'Ch9': 'T7', 'Ch10': 'GND', 'Ch11': 'CP5', 'Ch12': 'CP1',
           'Ch13': 'Pz', 'Ch14': 'P3', 'Ch15': 'P7', 'Ch16': 'O1', 'Ch17': 'Oz', 'Ch18': 'O2',
           'Ch19': 'P4', 'Ch20': 'P8', 'Ch21': 'Rmastoid', 'Ch22': 'CP6', 'Ch23': 'CP2', 'Ch24': 'Cz',
           'Ch25': 'C4', 'Ch26': 'T8', 'Ch27': 'RHEye', 'Ch28': 'FC6', 'Ch29': 'FC2', 'Ch30': 'F4',
@@ -117,7 +122,8 @@ EEG.filter(l_freq=None, h_freq=50)
 EEG.filter(l_freq=1, h_freq=None)
 
 # Add a notch filter from 60 Hz
-freqs = np.arange(60, 241, 60)  # This will create an array [60, 120, 180, 240] to capture the harmonics
+# This will create an array [60, 120, 180, 240] to capture the harmonics
+freqs = np.arange(60, 241, 60)
 EEG.notch_filter(freqs)
 
 # Plot the data to visualize waveforms after filtering
@@ -127,48 +133,48 @@ EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
 EEG.plot_psd()
 
 # Save the filtered data
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
-preprocessed_file = os.path.join(output_dir, subj + '_maprenamed&nfiltered.fif')
+# Replace with your desired output directory
+output_dir = r'../data/out'
+preprocessed_file = os.path.join(
+    output_dir, subj + '_maprenamed&nfiltered.fif')
 EEG.save(preprocessed_file, overwrite=True)
 
 #################################################################################
 
 # MARKING BAD CHANNELS
 
-import copy # This is a Python module that allows you to copy objects without changing the original object
 
 # Visualize all channels to identify bad channels
 EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
 
 # This can be used to plot the data with the bad channels marked.
 # Uncomment the two lines of code below to see the plot
-picks = mne.pick_channels_regexp(EEG.ch_names, regexp="AF.|FT.")  # Replace 'regexp=" ."' with the tentative bad channels
+# Replace 'regexp=" ."' with the tentative bad channels
+picks = mne.pick_channels_regexp(EEG.ch_names, regexp="AF.|FT.")
 EEG.plot(order=picks, n_channels=len(picks))
 
 # Change list of bad channels
 original_bads = copy.deepcopy(EEG.info["bads"])
 EEG.info["bads"].append("AF7")  # add a single channel
 original_bads.append("AF7")  # add a single channel to the original_bads list
-#EEG_csd.info["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
-#original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
+# EEG_csd.info["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
+# original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
 
 # Print the bad channels to double check
 print(EEG.info['bads'])
 print(original_bads)
 
 # Save the data with the bad channels marked
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
+# Replace with your desired output directory
+output_dir = r'../data/out'
 preprocessed_file = os.path.join(output_dir, subj + '_badchannels.fif')
 EEG.save(preprocessed_file, overwrite=True)
 
-#############################-ONLY RUN NEXT STEP IF BAD CHANNELS ARE FOUND TO INTERPOLATE-#############################
+############################# -ONLY RUN NEXT STEP IF BAD CHANNELS ARE FOUND TO INTERPOLATE-#############################
 
 # ICA (Independent Component Analysis)
 
 # Import necessary Python modules
-from mne.preprocessing import ICA
-from mne_icalabel import label_components
-from sklearn.decomposition import PCA
 
 # Keep a reference to the original, uncropped data
 original_EEG = EEG
@@ -207,7 +213,8 @@ ica = ICA(
 )
 
 # Pick only EEG channels
-picks_eeg = mne.pick_types(original_EEG.info, meg=False, eeg=True, eog=False, stim=False, emg=False, exclude='bads')
+picks_eeg = mne.pick_types(original_EEG.info, meg=False,
+                           eeg=True, eog=False, stim=False, emg=False, exclude='bads')
 
 # Fit ICA using only EEG channels
 ica.fit(original_EEG, picks=picks_eeg, decim=3)
@@ -222,14 +229,17 @@ n_components_actual = ica.n_components_
 # Selecting ICA components automatically using ICLabel
 ic_labels = label_components(original_EEG, ica, method="iclabel")
 component_labels = ic_labels["labels"]  # Extract the labels
-component_probabilities = ic_labels["y_pred_proba"]  # Extract the probabilities
+# Extract the probabilities
+component_probabilities = ic_labels["y_pred_proba"]
 for i in range(0, n_components_actual, 62):
     # Plot the components
-    fig = ica.plot_components(picks=range(i, min(i + 62, n_components_actual)), ch_type='eeg', inst=original_EEG)
+    fig = ica.plot_components(picks=range(
+        i, min(i + 62, n_components_actual)), ch_type='eeg', inst=original_EEG)
     # Set titles for each axis based on the labels and probabilities
     for ax, label, prob in zip(fig.axes, component_labels[i:min(i + 62, n_components_actual)],
                                component_probabilities[i:min(i + 62, n_components_actual)]):
-        ax.set_title(f"{label} ({prob:.2f})")  # Displaying label and probability rounded to 2 decimal places
+        # Displaying label and probability rounded to 2 decimal places
+        ax.set_title(f"{label} ({prob:.2f})")
     # blinks
     ica.plot_overlay(original_EEG, exclude=[0], picks="eeg")
 
@@ -240,10 +250,13 @@ for idx, label in enumerate(component_labels):
 
 # Modify labels based on user input
 while True:
-    modify = input("\nDo you want to modify any label? (yes/no): ").strip().lower()
+    modify = input(
+        "\nDo you want to modify any label? (yes/no): ").strip().lower()
     if modify == 'yes':
-        component_nums = input("Enter the component numbers you want to modify (comma-separated): ").split(',')
-        new_labels = input("Enter the new labels for these components (comma-separated): ").split(',')
+        component_nums = input(
+            "Enter the component numbers you want to modify (comma-separated): ").split(',')
+        new_labels = input(
+            "Enter the new labels for these components (comma-separated): ").split(',')
 
         for comp_num, new_label in zip(component_nums, new_labels):
             component_labels[int(comp_num.strip())] = new_label.strip()
@@ -276,7 +289,7 @@ fig = original_EEG.plot(show_scrollbars=False)
 fig = reconst_EEG.plot(show_scrollbars=False)
 
 # Save the preprocessed data
-output_dir = r'C:\Users\cerna\Downloads'
+output_dir = r'../data/out'
 preprocessed_file = os.path.join(output_dir, subj + '_ICA.fif')
 reconst_EEG.save(preprocessed_file, overwrite=True)
 
@@ -289,23 +302,30 @@ new_chs = original_EEG.info['chs'].copy()
 for ch in new_chs:
     ch['loc'] = np.nan_to_num(ch['loc'], nan=0.0, posinf=0.0, neginf=0.0)
 
-new_info = mne.create_info([ch['ch_name'] for ch in new_chs], original_EEG.info['sfreq'], ch_types='eeg')
+new_info = mne.create_info(
+    [ch['ch_name'] for ch in new_chs], original_EEG.info['sfreq'], ch_types='eeg')
 original_EEG = mne.io.RawArray(original_EEG.get_data(), new_info)
-original_EEG.set_montage(mne.channels.make_dig_montage(ch_pos={ch['ch_name']: ch['loc'][:3] for ch in new_chs}))
-original_EEG.info['bads'] = original_bads  # Set the bad channels back to the original list
+original_EEG.set_montage(mne.channels.make_dig_montage(
+    ch_pos={ch['ch_name']: ch['loc'][:3] for ch in new_chs}))
+# Set the bad channels back to the original list
+original_EEG.info['bads'] = original_bads
 
 # Repeat for cropped_EEG
 new_chs = cropped_EEG.info['chs'].copy()
 for ch in new_chs:
     ch['loc'] = np.nan_to_num(ch['loc'], nan=0.0, posinf=0.0, neginf=0.0)
 
-new_info = mne.create_info([ch['ch_name'] for ch in new_chs], cropped_EEG.info['sfreq'], ch_types='eeg')
+new_info = mne.create_info(
+    [ch['ch_name'] for ch in new_chs], cropped_EEG.info['sfreq'], ch_types='eeg')
 cropped_EEG = mne.io.RawArray(cropped_EEG.get_data(), new_info)
-cropped_EEG.set_montage(mne.channels.make_dig_montage(ch_pos={ch['ch_name']: ch['loc'][:3] for ch in new_chs}))
-cropped_EEG.info['bads'] = original_bads  # Set the bad channels back to the original list
+cropped_EEG.set_montage(mne.channels.make_dig_montage(
+    ch_pos={ch['ch_name']: ch['loc'][:3] for ch in new_chs}))
+# Set the bad channels back to the original list
+cropped_EEG.info['bads'] = original_bads
 
 # Pick types and interpolate bads
-original_EEG_data = original_EEG.copy().pick_types(meg=False, eeg=True, exclude=[])
+original_EEG_data = original_EEG.copy().pick_types(
+    meg=False, eeg=True, exclude=[])
 original_EEG_data_interp = original_EEG_data.copy().interpolate_bads(reset_bads=False)
 
 cropped_EEG_data = cropped_EEG.copy().pick_types(meg=False, eeg=True, exclude=[])
@@ -319,7 +339,7 @@ for title, data in zip(["cropped orig.", "cropped interp."], [cropped_EEG_data, 
     fig.suptitle(title, size="xx-large", weight="bold")
 
 # Save the interpolated data
-output_dir = r'C:\Users\cerna\Downloads'
+output_dir = r'../data/out'
 preprocessed_file = os.path.join(output_dir, subj + '_interpolated.fif')
 original_EEG_data_interp.save(preprocessed_file, overwrite=True)
 
@@ -329,10 +349,13 @@ original_EEG_data_interp.save(preprocessed_file, overwrite=True)
 
 # Define epoch parameters
 name = subj + '_eventchan'  # --> change for each condition
-epoch_no = np.floor(reconst_EEG.get_data().shape[1] / reconst_EEG.info['sfreq'])  # Latency rate/Sampling rate
+# Latency rate/Sampling rate
+epoch_no = np.floor(reconst_EEG.get_data(
+).shape[1] / reconst_EEG.info['sfreq'])
 
 # Create a list of onset times for your events
-onsets = np.arange(0, reconst_EEG.get_data().shape[1] / reconst_EEG.info['sfreq'], 1)
+onsets = np.arange(0, reconst_EEG.get_data(
+).shape[1] / reconst_EEG.info['sfreq'], 1)
 
 # Create a list of event durations (all zeros if the events are instantaneous)
 durations = np.zeros_like(onsets)
@@ -356,7 +379,8 @@ tmin = -0.5  # Start of the epoch (in seconds)
 tmax = 0.5  # End of the epoch (in seconds)
 
 # Create epochs without rejection to keep all data
-epochs_all = mne.Epochs(reconst_EEG, events, event_id=event_id, tmin=tmin, tmax=tmax, proj=True, baseline=None, preload=True)
+epochs_all = mne.Epochs(reconst_EEG, events, event_id=event_id,
+                        tmin=tmin, tmax=tmax, proj=True, baseline=None, preload=True)
 
 # Apply z-score normalization and keep track of which epochs exceed the threshold
 zscore_threshold = 6
@@ -374,7 +398,8 @@ epochs_all.drop(to_drop)
 
 # Resample and decimate the epochs
 current_sfreq = epochs_all.info['sfreq']
-desired_sfreq = 512  # Hz chaging this according to  https://doi.org/10.1046/j.1440-1819.2000.00729.x
+# Hz chaging this according to  https://doi.org/10.1046/j.1440-1819.2000.00729.x
+desired_sfreq = 512
 
 # Apply the resampling
 epochs_all.resample(desired_sfreq, npad='auto')
@@ -386,14 +411,7 @@ data_all = epochs_all.get_data()
 epochs_all.plot()
 
 # Save the filtered data
-output_dir = r'C:\Users\cerna\Downloads'  # Replace with your desired output directory
+# Replace with your desired output directory
+output_dir = r'../data/out'
 preprocessed_file = os.path.join(output_dir, subj + '_epoched.fif')
 epochs_all.save(preprocessed_file, overwrite=True)
-
-
-
-
-
-
-
-
