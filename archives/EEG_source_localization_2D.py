@@ -147,7 +147,7 @@ stcs = apply_inverse_epochs(
 stc_avg = sum(stcs) / len(stcs)
 
 # Get the time of the peak magnitude
-_, time_max = stc_avg.magnitude().get_peak(hemi="lh")
+_, time_max = stc_avg.get_peak(hemi="lh")
 
 # Visualization parameters
 kwargs = dict(
@@ -169,9 +169,10 @@ avg_data = stc_avg.data.mean(axis=(0, 1))
 
 # Plot the average data as a function of time
 fig, ax = plt.subplots()
-ax.plot(1e3 * stc_avg.times, avg_data)
-ax.set(xlabel="time (ms)", ylabel="eLORETA value (average)")
-plt.show()
+print(stc_avg.times, avg_data)
+# ax.plot(1e3 * stc_avg.times, avg_data)
+# ax.set(xlabel="time (ms)", ylabel="eLORETA value (average)")
+# plt.show()
 
 
 print('Saving file')
