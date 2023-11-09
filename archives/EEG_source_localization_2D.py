@@ -10,9 +10,9 @@ import os
 import os.path as op
 import numpy as np
 import matplotlib
-matplotlib.use('Qt5Agg')  # Setting the backend BEFORE importing pyplot
+#matplotlib.use('Qt5Agg')  # Setting the backend BEFORE importing pyplot
 
-mne.viz.set_3d_backend("pyvista")
+#mne.viz.set_3d_backend("pyvista")
 
 #################################################################################
 # Adult template MRI (fsaverage)

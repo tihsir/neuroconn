@@ -25,7 +25,7 @@ import mne
 import numpy as np
 from scipy.stats import zscore
 
-#matplotlib.use('Qt5Agg')  # or 'TkAgg', depending on your system
+matplotlib.use('Qt5Agg')  # or 'TkAgg', depending on your system
 # BELOW IS AN EXAMPLE - REPLACE WITH REAL DATA
 # Source of adapted code below (reference if needed):
 # https://iq.opengenus.org/eeg-signal-analysis-with-python/
