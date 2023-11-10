@@ -1,0 +1,28 @@
+https://mne.tools/stable/install/advanced.html
+
+
+
+file:///home/prakhar/Downloads/fnsys-09-00175.pdf
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9204388/
+
+https://www.sciencedirect.com/science/article/pii/B978012407908300011X
+
+
+Meaningfulness of connections
+
+connectivity edges is a function of pearson correlation of disparity of dpli across nodes
+
+
+make sure thresholding works - robustness in dynamic thresholding
+
+global and node level metrics - big picture and small picture
+
+Healthy controls vs taichi - differences, why and how quantified
+
+Analyze the backbone difference and how it affects information flow
+
+granger causality
+
+
+minimum spanning trees
