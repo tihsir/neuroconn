@@ -11,6 +11,7 @@ import matplotlib
 import mne
 import numpy as np
 from scipy.stats import zscore
+mne.viz.set_browser_backend('matplotlib', verbose=None)
 
 # defining input and output directory
 files_in = '../data/in/subjects/'
