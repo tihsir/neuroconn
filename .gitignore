@@ -3,3 +3,5 @@ data/
 mne.sh
 
 pyvista/
+
+*/.ipynb_checkpoints/

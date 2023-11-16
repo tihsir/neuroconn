@@ -26,3 +26,18 @@ granger causality
 
 
 minimum spanning trees
+
+
+
+Processing participants:
+- how to pre-process a channel
+
+
+TODO:
+- resilience attack
+- icalabel training
+- https://labeling.ucsd.edu/tutorial/practice
+- meet with max to learn about labelling
+- 2 step thresholding
+- think about alternative end results
+-  

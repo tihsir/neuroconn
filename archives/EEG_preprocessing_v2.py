@@ -24,8 +24,10 @@ import matplotlib
 import mne
 import numpy as np
 from scipy.stats import zscore
+import plotly.io as pio
+matplotlib.use('Agg')
 
-#matplotlib.use('Qt5Agg')  # or 'TkAgg', depending on your system
+mne.viz.set_3d_backend('pyvistaqt')
 # BELOW IS AN EXAMPLE - REPLACE WITH REAL DATA
 # Source of adapted code below (reference if needed):
 # https://iq.opengenus.org/eeg-signal-analysis-with-python/
@@ -52,7 +54,9 @@ channels_to_drop = EEG.ch_names[-8:]
 EEG.drop_channels(channels_to_drop)
 
 # Plot the data to visualize waveforms (all remaining channels)
-EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
+# plot_obj = EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
+mne.viz.plot_raw(EEG)
+# This is for Python 3 - py2 may need `file` instead of `open`
 
 # Checking data attributes to make sure we have the right number of channels
 print(EEG.info)
@@ -235,13 +239,17 @@ for i in range(0, n_components_actual, 62):
     # Plot the components
     fig = ica.plot_components(picks=range(
         i, min(i + 62, n_components_actual)), ch_type='eeg', inst=original_EEG)
+    print(fig)
+    input('bp?')
     # Set titles for each axis based on the labels and probabilities
     for ax, label, prob in zip(fig.axes, component_labels[i:min(i + 62, n_components_actual)],
                                component_probabilities[i:min(i + 62, n_components_actual)]):
         # Displaying label and probability rounded to 2 decimal places
         ax.set_title(f"{label} ({prob:.2f})")
+    fig.savefig('./image.png')
     # blinks
     ica.plot_overlay(original_EEG, exclude=[0], picks="eeg")
+    input('bp1?')
 
 # ICLabel scores
 print("\nInitial labels:")
