@@ -76,7 +76,7 @@ for subject in subject_list:
         EEG.save(raw_file, overwrite=True)
 
         # write channel info to the log file
-        log.write(EEG.info)
+        log.write(str(EEG.info))
         log.write("\n \n \n \n")
 
         # Rename the channels using the new ch_map
