@@ -47,8 +47,6 @@ for subject in subject_list:
         input_path = files_in+subject + '/' + mode + '/'
         output_path = files_out + subject + '/' + mode + '/'
 
-        print(input_path, output_path)
-
         log_file = output_path+'log.txt'
         log = open(log_file, "w")
 
@@ -59,6 +57,7 @@ for subject in subject_list:
         try:
             EEG = mne.io.read_raw_brainvision(
                 input_path + subject + '.vhdr', preload=True)
+            print('Success')
         except:  # skip if error
             log.write("ERROR Reading in .vhdr at " +
                       input_path + subject + '.vhdr' + "\n")
