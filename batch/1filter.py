@@ -11,7 +11,6 @@ import matplotlib
 import mne
 import numpy as np
 from scipy.stats import zscore
-matplotlib.use('Agg')  # disable plotting
 
 # defining input and output directory
 files_in = '../data/in/subjects/'
@@ -69,6 +68,7 @@ for subject in subject_list:
         channels_to_drop = EEG.ch_names[-8:]
         EEG.drop_channels(channels_to_drop)
 
+        matplotlib.use('Agg')  # disable plotting
         raw_plot = EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
         raw_file = output_path + subject + '_raw.fif'
         EEG.save(raw_file, overwrite=True)
