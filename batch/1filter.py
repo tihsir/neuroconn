@@ -69,7 +69,8 @@ for subject in subject_list:
         EEG.drop_channels(channels_to_drop)
 
         matplotlib.use('Agg')  # disable plotting
-        raw_plot = EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
+        raw_plot = EEG.plot(n_channels=len(EEG.ch_names),
+                            scalings='auto', show=False)
         raw_file = output_path + subject + '_raw.fif'
         EEG.save(raw_file, overwrite=True)
 
@@ -126,7 +127,8 @@ for subject in subject_list:
         EEG.notch_filter(freqs)
 
         # Plot the data to visualize waveforms after filtering
-        filtered_plot = EEG.plot(n_channels=len(EEG.ch_names), scalings='auto')
+        filtered_plot = EEG.plot(n_channels=len(
+            EEG.ch_names), scalings='auto', show=False)
 
         # Plotting EEG signal via PSD to check if the notch filter removed the power line noise
         psd_plot = EEG.plot_psd()
