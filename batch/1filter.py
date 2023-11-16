@@ -43,7 +43,7 @@ ch_map = {'Ch1': 'Fp1', 'Ch2': 'Fz', 'Ch3': 'F3', 'Ch4': 'F7', 'Ch5': 'LHEye', '
 for subject in subject_list:
     for mode in modes:
         # defining paths for current subject
-        
+
         input_path = files_in+subject + '/' + mode + '/'
         output_path = files_out + subject + '/' + mode + '/'
 
@@ -53,7 +53,7 @@ for subject in subject_list:
         log = open(log_file, "w")
 
         # debug line
-        log.write("Reading in .vhdr at " + input_path + 'TCOA_'
+        log.write("Reading in .vhdr at " + input_path + 'TCOA_' +
                   subject + '_'+mode+'.vhdr' + "\n \n \n \n")
         # loading in VHDR file
         try:
