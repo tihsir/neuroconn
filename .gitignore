@@ -6,7 +6,7 @@
 *vhdr
 *.stc
 data/in/
-
+local/
 mne.sh
 
 pyvista/

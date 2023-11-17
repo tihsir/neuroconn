@@ -165,8 +165,11 @@ for subject in subject_list:
         log.write("Initializing labels file \n")
         label_file = output_path+'labels.txt'
         labelf = open(label_file, "w")
+        prob_file = output_path+'probs.txt'
+        probf = open(prob_file, "w")
 
         for idx, label in enumerate(component_labels):
-            labelf.write(f"Component {idx}: {label} \n")
+            labelf.write(f"{label} \n")
+            probf.write(f"{component_probabilities[idx]} \n")
 
         log.write("Completed subject and mode successfully \n")
