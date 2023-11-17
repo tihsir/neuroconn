@@ -104,12 +104,12 @@ for subject in subject_list:
 
         # Plot the explained variance ratio
         plt.figure(figsize=(10, 5))
-        plt.plot(np.cumsum(pca.explained_variance_ratio_))
+        fig = plt.plot(np.cumsum(pca.explained_variance_ratio_))
         plt.xlabel('Number of Components')
         plt.ylabel('Cumulative Explained Variance')
         plt.title('Explained Variance by PCA Components')
         plt.grid(True)
-        plt.imsave(output_path + subject + '_PCA_variance.png')
+        plt.imsave(output_path + subject + '_PCA_variance.png', fig)
 
         # Define ICA parameters
         n_components = 0.99  # Choose number of ICA components based on PCA
