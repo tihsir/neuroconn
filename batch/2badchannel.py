@@ -13,7 +13,7 @@ import numpy as np
 from scipy.stats import zscore
 matplotlib.use('Agg')  # disable plotting
 mne.viz.set_browser_backend('matplotlib', verbose=None)
-
+mne.set_config('MNE_BROWSER_BACKEND', 'matplotlib')
 
 # defining input and output directory
 files_in = '../data/in/subjects/'

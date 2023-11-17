@@ -208,7 +208,6 @@ plt.grid(True)
 plt.savefig('file.png')
 
 
-exit()
 # Define ICA parameters
 n_components = 0.99  # Choose number of ICA components based on PCA
 ica = ICA(
@@ -227,7 +226,10 @@ picks_eeg = mne.pick_types(original_EEG.info, meg=False,
 ica.fit(original_EEG, picks=picks_eeg, decim=3)
 
 # Plot the ICA components as time series
-ica.plot_sources(original_EEG, show_scrollbars=False, show=True)
+obj = ica.plot_sources(original_EEG, show_scrollbars=False, show=True)
+print(obj)
+obj.figsave('file.png')
+exit()
 
 # Plot the ICA components as topographies in multiple windows
 print("Plotting the ICA components as topographies...")
