@@ -141,7 +141,7 @@ for subject in subject_list:
 
         # Selecting ICA components automatically using ICLabel
         ic_labels = label_components(
-            original_EEG, ica, backend='torch')
+            original_EEG, ica, method='iclabel')
         print(ic_labels)
         component_labels = ic_labels["labels"]  # Extract the labels
         # Extract the probabilities
