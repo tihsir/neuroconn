@@ -55,7 +55,7 @@ for subject in subject_list:
 
         # loading in files savef from 1filter.py
         EEG = mne.io.read_raw_fif(
-            output_path + subject + '_maprenamed&nfiltered.fif')
+            output_path + subject + '_maprenamed&nfiltered.fif', preload=True)
 
         # MARKING BAD CHANNELS
 
