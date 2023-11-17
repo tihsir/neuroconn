@@ -1,6 +1,6 @@
 # Import necessary Python modules
 from sklearn.decomposition import PCA
-import mne_icalabel.iclabel as iclabel
+from mne_icalabel import label_components
 from mne.preprocessing import ICA
 import copy  # This is a Python module that allows you to copy objects without changing the original object
 from scipy import signal
@@ -140,9 +140,9 @@ for subject in subject_list:
         n_components_actual = ica.n_components_
 
         # Selecting ICA components automatically using ICLabel
-        ic_labels = iclabel.label_components.iclabel_label_components(
+        ic_labels = label_components.iclabel_label_components(
             original_EEG, ica, backend='torch')
-
+        print(ic_labels)
         component_labels = ic_labels["labels"]  # Extract the labels
         # Extract the probabilities
         component_probabilities = ic_labels["y_pred_proba"]
