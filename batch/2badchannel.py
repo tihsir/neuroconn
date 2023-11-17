@@ -12,6 +12,7 @@ import mne
 import numpy as np
 from scipy.stats import zscore
 matplotlib.use('Agg')  # disable plotting
+mne.viz.set_browser_backend('matplotlib', verbose=None)
 
 
 # defining input and output directory
