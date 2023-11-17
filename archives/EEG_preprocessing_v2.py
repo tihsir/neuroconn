@@ -26,7 +26,7 @@ import numpy as np
 from scipy.stats import zscore
 import plotly.io as pio
 matplotlib.use('Agg')
-
+mne.set_config('MNE_BROWSER_BACKEND', 'matplotlib')
 mne.viz.set_3d_backend('pyvistaqt')
 # BELOW IS AN EXAMPLE - REPLACE WITH REAL DATA
 # Source of adapted code below (reference if needed):
@@ -210,6 +210,9 @@ plt.savefig('file.png')
 
 # Define ICA parameters
 n_components = 0.99  # Choose number of ICA components based on PCA
+
+mne.viz.use_browser_backend('matplotlib')
+
 ica = ICA(
     n_components=n_components,
     max_iter="auto",
@@ -227,9 +230,9 @@ ica.fit(original_EEG, picks=picks_eeg, decim=3)
 
 # Plot the ICA components as time series
 obj = ica.plot_sources(original_EEG, show_scrollbars=False, show=True)
-print(obj)
-obj.figsave('file.png')
-exit()
+
+plt.savefig('im.png')
+
 
 # Plot the ICA components as topographies in multiple windows
 print("Plotting the ICA components as topographies...")

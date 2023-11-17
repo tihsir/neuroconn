@@ -132,7 +132,7 @@ for subject in subject_list:
         ica_ts_plot = ica.plot_sources(
             original_EEG, show_scrollbars=False, show=True)
         # saving the timeseries plot
-        ica_ts_plot.figsave(output_path + subject + 'ica_timeseries.png')
+        plt.savefig(output_path + subject + 'ica_timeseries.png')
 
         # Plot the ICA components as topographies in multiple windows
         log.write("Plotting the ICA components as topographies... \n")
