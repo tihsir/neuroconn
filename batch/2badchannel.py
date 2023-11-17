@@ -142,7 +142,6 @@ for subject in subject_list:
         # Selecting ICA components automatically using ICLabel
         ic_labels = label_components(
             original_EEG, ica, method='iclabel')
-        print(ic_labels)
         component_labels = ic_labels["labels"]  # Extract the labels
         # Extract the probabilities
         component_probabilities = ic_labels["y_pred_proba"]
@@ -171,3 +170,4 @@ for subject in subject_list:
             labelf.write(f"Component {idx}: {label} \n")
 
         log.write("Completed subject and mode successfully \n")
+        exit()

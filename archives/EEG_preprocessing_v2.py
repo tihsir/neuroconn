@@ -242,7 +242,6 @@ n_components_actual = ica.n_components_
 ic_labels = label_components(original_EEG, ica, method="iclabel")
 
 
-exit()
 component_labels = ic_labels["labels"]  # Extract the labels
 # Extract the probabilities
 component_probabilities = ic_labels["y_pred_proba"]
@@ -267,6 +266,7 @@ print("\nInitial labels:")
 for idx, label in enumerate(component_labels):
     print(f"Component {idx}: {label}")
 
+exit()
 # Modify labels based on user input
 while True:
     modify = input(
