@@ -170,4 +170,3 @@ for subject in subject_list:
             labelf.write(f"Component {idx}: {label} \n")
 
         log.write("Completed subject and mode successfully \n")
-        exit()
