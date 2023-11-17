@@ -140,7 +140,7 @@ for subject in subject_list:
         n_components_actual = ica.n_components_
 
         # Selecting ICA components automatically using ICLabel
-        ic_labels = label_components.iclabel_label_components(
+        ic_labels = label_components(
             original_EEG, ica, backend='torch')
         print(ic_labels)
         component_labels = ic_labels["labels"]  # Extract the labels
