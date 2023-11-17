@@ -165,9 +165,10 @@ original_bads.append("AF7")  # add a single channel to the original_bads list
 # original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
 
 # Print the bad channels to double check
-print(EEG.info['bads'])
-print(original_bads)
 
+print(EEG.info['bads'])
+print(str(original_bads))
+exit()
 # Save the data with the bad channels marked
 # Replace with your desired output directory
 output_dir = r'../data/out'

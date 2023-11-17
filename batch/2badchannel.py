@@ -50,7 +50,7 @@ for subject in subject_list:
 
         print(input_path, output_path)
 
-        log_file = output_path+'log.txt'
+        log_file = output_path+'log2.txt'
         log = open(log_file, "w")
 
         # loading in files savef from 1filter.py
@@ -75,8 +75,8 @@ for subject in subject_list:
 
         # Print the bad channels to double check
         log.write('Writing Bad Channels to Double check \n')
-        log.write(EEG.info['bads'] + '\n')
-        log.write(original_bads + '\n \n \n')
+        log.write(str(EEG.info['bads']) + '\n')
+        log.write(str(original_bads) + '\n \n \n')
 
         # Save the data with the bad channels marked
         # Replace with your desired output directory

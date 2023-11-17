@@ -47,7 +47,7 @@ for subject in subject_list:
         input_path = files_in+subject + '/' + mode + '/'
         output_path = files_out + subject + '/' + mode + '/'
 
-        log_file = output_path+'log.txt'
+        log_file = output_path+'log1.txt'
         log = open(log_file, "w")
 
         # debug line
