@@ -1,4 +1,11 @@
-data/
+*.fif
+*npy
+*sfp
+*.eeg
+*vmrk
+*vhdr
+*.stc
+data/in/
 
 mne.sh
 
