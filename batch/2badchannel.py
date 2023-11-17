@@ -153,11 +153,11 @@ for subject in subject_list:
                 # Displaying label and probability rounded to 2 decimal places
                 ax.set_title(f"{label} ({prob:.2f})")
 
-            fig.figsave(output_path + subject + 'ica_topo.png')
+            plt.savefig(output_path + subject + 'ica_topo.png')
             # blinks
             fig_overlay = ica.plot_overlay(
                 original_EEG, exclude=[0], picks="eeg")
-            fig_overlay.savefig(output_path + subject + 'eeg_overlay.png')
+            plt.savefig(output_path + subject + 'eeg_overlay.png')
         # ICLabel scores
 
         log.write("Initializing labels file \n")
