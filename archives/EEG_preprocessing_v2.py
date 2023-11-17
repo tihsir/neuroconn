@@ -240,6 +240,9 @@ n_components_actual = ica.n_components_
 
 # Selecting ICA components automatically using ICLabel
 ic_labels = label_components(original_EEG, ica, method="iclabel")
+
+
+exit()
 component_labels = ic_labels["labels"]  # Extract the labels
 # Extract the probabilities
 component_probabilities = ic_labels["y_pred_proba"]

@@ -1,6 +1,6 @@
 # Import necessary Python modules
 from sklearn.decomposition import PCA
-from mne_icalabel import label_components
+import mne_icalabel.iclabel.label_components as label_components
 from mne.preprocessing import ICA
 import copy  # This is a Python module that allows you to copy objects without changing the original object
 from scipy import signal
@@ -14,6 +14,7 @@ from scipy.stats import zscore
 matplotlib.use('Agg')  # disable plotting
 mne.viz.set_browser_backend('matplotlib', verbose=None)
 mne.set_config('MNE_BROWSER_BACKEND', 'matplotlib')
+
 
 # defining input and output directory
 files_in = '../data/in/subjects/'
@@ -44,11 +45,11 @@ ch_map = {'Ch1': 'Fp1', 'Ch2': 'Fz', 'Ch3': 'F3', 'Ch4': 'F7', 'Ch5': 'LHEye', '
 
 for subject in subject_list:
     for mode in modes:
+
+        print(subject, mode)
         # defining paths for current subject
         input_path = files_in+subject + '/' + mode + '/'
         output_path = files_out + subject + '/' + mode + '/'
-
-        print(input_path, output_path)
 
         log_file = output_path+'log2.txt'
         log = open(log_file, "w")
@@ -140,6 +141,7 @@ for subject in subject_list:
 
         # Selecting ICA components automatically using ICLabel
         ic_labels = label_components(original_EEG, ica, method="iclabel")
+
         component_labels = ic_labels["labels"]  # Extract the labels
         # Extract the probabilities
         component_probabilities = ic_labels["y_pred_proba"]
