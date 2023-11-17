@@ -109,7 +109,7 @@ for subject in subject_list:
         plt.ylabel('Cumulative Explained Variance')
         plt.title('Explained Variance by PCA Components')
         plt.grid(True)
-        plt.figsave(output_path + subject + '_PCA_variance.png')
+        plt.imsave(output_path + subject + '_PCA_variance.png')
 
         # Define ICA parameters
         n_components = 0.99  # Choose number of ICA components based on PCA
