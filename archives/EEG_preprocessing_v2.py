@@ -168,7 +168,7 @@ original_bads.append("AF7")  # add a single channel to the original_bads list
 
 print(EEG.info['bads'])
 print(str(original_bads))
-exit()
+
 # Save the data with the bad channels marked
 # Replace with your desired output directory
 output_dir = r'../data/out'
@@ -199,14 +199,16 @@ pca = PCA()
 pca.fit(data)
 
 # Plot the explained variance ratio
-plt.figure(figsize=(10, 5))
+fig = plt.figure(figsize=(10, 5))
 plt.plot(np.cumsum(pca.explained_variance_ratio_))
 plt.xlabel('Number of Components')
 plt.ylabel('Cumulative Explained Variance')
 plt.title('Explained Variance by PCA Components')
 plt.grid(True)
-plt.show()
+plt.savefig('file.png')
 
+
+exit()
 # Define ICA parameters
 n_components = 0.99  # Choose number of ICA components based on PCA
 ica = ICA(
