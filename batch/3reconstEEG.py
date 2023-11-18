@@ -199,4 +199,4 @@ for subject in subject_list:
         # Save the filtered data
         # Replace with your desired output directory
         epochs_all.save(output_path + '_epoched.fif', overwrite=True)
-        exit()
+        exit(R)
