@@ -48,6 +48,8 @@ for subject in subject_list:
         output_path = files_out + subject + '/' + mode + '/'
 
         log_file = output_path+'log1.txt'
+        bad_channel_file = output_path+'bad_channel.txt'
+        bad_channel = open(bad_channel_file, "w")
         log = open(log_file, "w")
 
         # debug line
@@ -131,10 +133,15 @@ for subject in subject_list:
         filtered_plot = EEG.plot(n_channels=len(
             EEG.ch_names), scalings='auto', show=False)
 
+        plt.savefig(output_path+'EEG_filtered.png')
+
+        bad_channel.write('')
+
         # Plotting EEG signal via PSD to check if the notch filter removed the power line noise
         psd_plot = EEG.plot_psd()
-
+        plt.savefig(output_path+'psd.png')
         # Save the filtered data
         # Replace with your desired output directory
         preprocessed_file = output_path + subject + '_maprenamed&nfiltered.fif'
         EEG.save(preprocessed_file, overwrite=True)
+        # commit
