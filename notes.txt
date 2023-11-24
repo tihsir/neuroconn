@@ -41,3 +41,15 @@ TODO:
 - 2 step thresholding
 - think about alternative end results
 -  
+
+
+Bad channel identification
+
+- scale the chart to see noisy channels. Crzy amplitude variaition
+- Drift over time
+- Crazy spikes in the Os because of the movement
+
+- Mark bad channel
+- run ICA after it (ICA assumes channels are independent, interpolation makes channels dependent)
+-
+
