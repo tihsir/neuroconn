@@ -133,7 +133,8 @@ for subject in subject_list:
         filtered_plot = EEG.plot(n_channels=len(
             EEG.ch_names), scalings='auto', show=False)
 
-        plt.savefig(output_path+'EEG_filtered.png')
+        filtered_plot.set_size_inches(20, 20)
+        plt.savefig(output_path+'EEG_filtered.png', dpi=500)
 
         bad_channel.write('')
 
