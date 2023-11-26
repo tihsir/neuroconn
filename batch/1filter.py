@@ -75,7 +75,8 @@ for subject in subject_list:
             channels_to_drop = []
             try:
                 channels_to_drop = EEG.ch_names[index+1]
-                           
+            except:
+                pass
             EEG.drop_channels(channels_to_drop)
 
         print(EEG.ch_names)
