@@ -69,27 +69,31 @@ for subject in subject_list:
         # This can be used to plot the data with the bad channels marked.
         # Uncomment the two lines of code below to see the plot
         # Replace 'regexp=" ."' with the tentative bad channels
-        picks = mne.pick_channels(EEG.ch_names, include=[], exclude=bad_txt)
-        plot_obj = EEG.plot(order=picks, n_channels=len(picks))
-        plt.savefig(output_path + 'bad_select.png')
+        if bad_txt == [''] or len(bad_txt) == 0:
+            pass
+        else:
+            picks = mne.pick_channels(
+                EEG.ch_names, include=[], exclude=bad_txt)
+            plot_obj = EEG.plot(order=picks, n_channels=len(picks))
+            plt.savefig(output_path + 'bad_select.png')
         # Change list of bad channels
-        original_bads = copy.deepcopy(EEG.info["bads"])
-        for bad in bad_txt:
-            EEG.info["bads"].append(bad)  # add a single channel
-            # add a single channel to the original_bads list
-            original_bads.append(bad)
-        # EEG_csd.info["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
-        # original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
+            original_bads = copy.deepcopy(EEG.info["bads"])
+            for bad in bad_txt:
+                EEG.info["bads"].append(bad)  # add a single channel
+                # add a single channel to the original_bads list
+                original_bads.append(bad)
+            # EEG_csd.info["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
+            # original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
 
-        # Print the bad channels to double check
-        log.write('Writing Bad Channels to Double check \n')
-        log.write(str(EEG.info['bads']) + '\n')
-        log.write(str(original_bads) + '\n \n \n')
+            # Print the bad channels to double check
+            log.write('Writing Bad Channels to Double check \n')
+            log.write(str(EEG.info['bads']) + '\n')
+            log.write(str(original_bads) + '\n \n \n')
 
-        # Save the data with the bad channels marked
-        # Replace with your desired output directory
-        bad_channel_file = output_path + subject + '_badchannels.fif'
-        EEG.save(bad_channel_file, overwrite=True)
+            # Save the data with the bad channels marked
+            # Replace with your desired output directory
+            bad_channel_file = output_path + subject + '_badchannels.fif'
+            EEG.save(bad_channel_file, overwrite=True)
 
         # ICA (Independent Component Analysis)
 
