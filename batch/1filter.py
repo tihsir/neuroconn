@@ -96,7 +96,8 @@ for subject in subject_list:
             EEG.rename_channels(ch_map)
         except:
             print('SOMETHING IS GOING WRONG FOR', subject, mode)
-            continue
+            print(EEG.ch_names)
+            exit()
         # Now the channels should match the names in the montage
         EEG.set_montage(montage, on_missing='warn')
 
