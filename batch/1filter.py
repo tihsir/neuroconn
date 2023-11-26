@@ -68,9 +68,13 @@ for subject in subject_list:
         #     continue
 
         # drop channels
-        channels_to_drop = EEG.ch_names[-8:]
+        print(EEG.ch_names)
+
+        if len(EEG.ch_names) > 66:
+            channels_to_drop = EEG.ch_names[-8:]
         EEG.drop_channels(channels_to_drop)
 
+        print(EEG.ch_names)
         matplotlib.use('Agg')  # disable plotting
         raw_plot = EEG.plot(n_channels=len(EEG.ch_names),
                             scalings='auto', show=False)
