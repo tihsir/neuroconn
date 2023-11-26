@@ -14,13 +14,13 @@ from scipy.stats import zscore
 matplotlib.use('Agg')  # disable plotting
 mne.viz.set_browser_backend('matplotlib', verbose=None)
 mne.set_config('MNE_BROWSER_BACKEND', 'matplotlib')
-
+mne.cuda.init_cuda(verbose=True)
 
 # defining input and output directory
 files_in = '../data/in/subjects/'
 files_out = '../data/out/subjects/'
 
-
+EEG_list = []
 # loading list of subject names from txt file
 names = open("./names.txt", "r")
 subject_list = names.read().split('\n')
@@ -60,17 +60,24 @@ for subject in subject_list:
 
         # MARKING BAD CHANNELS
 
+        # TODO - get bad channels from .txt files here
+
+        badf = open(output_path + 'bad_channel.txt', 'r')
+
+        bad_txt = badf.read().split('\n')  # get list of bad channels
+
         # This can be used to plot the data with the bad channels marked.
         # Uncomment the two lines of code below to see the plot
         # Replace 'regexp=" ."' with the tentative bad channels
-        picks = mne.pick_channels_regexp(EEG.ch_names, regexp="AF.|FT.")
+        picks = mne.pick_channels(EEG.ch_names, exclude=bad_txt)
         plot_obj = EEG.plot(order=picks, n_channels=len(picks))
-
+        plt.savefig(output_path + 'bad_select.png')
         # Change list of bad channels
         original_bads = copy.deepcopy(EEG.info["bads"])
-        EEG.info["bads"].append("AF7")  # add a single channel
-        # add a single channel to the original_bads list
-        original_bads.append("AF7")
+        for bad in bad_txt:
+            EEG.info["bads"].append(bad)  # add a single channel
+            # add a single channel to the original_bads list
+            original_bads.append(bad)
         # EEG_csd.info["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
         # original_bads["bads"].extend(["EEG 051", "EEG 052"])  # add a list of channels
 
@@ -160,8 +167,9 @@ for subject in subject_list:
             fig_overlay = ica.plot_overlay(
                 original_EEG, exclude=[0], picks="eeg")
             plt.savefig(output_path + subject + 'eeg_overlay.png')
-        # ICLabel scores
 
+        # ICLabel scores
+        EEG_list.append(original_EEG)
         log.write("Initializing labels file \n")
         label_file = output_path+'labels.txt'
         labelf = open(label_file, "w")
