@@ -69,7 +69,7 @@ for subject in subject_list:
         # This can be used to plot the data with the bad channels marked.
         # Uncomment the two lines of code below to see the plot
         # Replace 'regexp=" ."' with the tentative bad channels
-        picks = mne.pick_channels(EEG.ch_names, include = [] exclude=bad_txt)
+        picks = mne.pick_channels(EEG.ch_names, include=[], exclude=bad_txt)
         plot_obj = EEG.plot(order=picks, n_channels=len(picks))
         plt.savefig(output_path + 'bad_select.png')
         # Change list of bad channels
