@@ -127,8 +127,10 @@ for subject in subject_list:
         channel_types['RHEye'] = 'eog'
         channel_types['Rneck'] = 'emg'
         channel_types['Lneck'] = 'emg'
-        channel_types['Rmastoid'] = 'misc'
-
+        try:
+            channel_types['Rmastoid'] = 'misc'
+        except:
+            pass
         # Retrieve the locations of FP1 and FP2
         fp1_loc = EEG.info['chs'][EEG.ch_names.index('Fp1')]['loc'][:3]
         fp2_loc = EEG.info['chs'][EEG.ch_names.index('Fp2')]['loc'][:3]
