@@ -71,7 +71,7 @@ for subject in subject_list:
         print(EEG.ch_names)
 
         if len(EEG.ch_names) > 64:
-            channels_to_drop = EEG.ch_names[-(len(EEG.ch_names)-64+1):]
+            channels_to_drop = EEG.ch_names[-(len(EEG.ch_names)-64):]
         EEG.drop_channels(channels_to_drop)
 
         print(EEG.ch_names)
