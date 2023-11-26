@@ -56,16 +56,16 @@ for subject in subject_list:
         log.write("Reading in .vhdr at " + input_path + 'TCOA_' +
                   subject + '_'+mode+'.vhdr' + "\n \n \n \n")
         # loading in VHDR file
-        try:
-            EEG = mne.io.read_raw_brainvision(
-                input_path + 'TCOA_' +
-                subject + '_'+mode+'.vhdr', preload=True)
-            print('Success')
-        except:  # skip if error
-            log.write("ERROR Reading in .vhdr at " +
-                      input_path + 'TCOA_' +
-                      subject + '_'+mode+'.vhdr' + "\n")
-            continue
+
+        EEG = mne.io.read_raw_brainvision(
+            input_path + 'TCOA_' +
+            subject + '_'+mode+'.vhdr', preload=True)
+        print('Success')
+        # except:  # skip if error
+        #     log.write("ERROR Reading in .vhdr at " +
+        #               input_path + 'TCOA_' +
+        #               subject + '_'+mode+'.vhdr' + "\n")
+        #     continue
 
         # drop channels
         channels_to_drop = EEG.ch_names[-8:]
