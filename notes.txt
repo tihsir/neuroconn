@@ -53,3 +53,31 @@ Bad channel identification
 - run ICA after it (ICA assumes channels are independent, interpolation makes channels dependent)
 -
 
+
+
+NEW MEETING:
+
+- Subject 116 - 
+	: Rmastoid data replaced with GND.
+	: Interpolation comes after the ICA
+	: Get more data?
+	: We want TCOA against TCOA
+	: For 116 copy GND to Rmast
+- Subhject 117  EO - only 10 components
+- Subject 116 EC - 10 comps, EO-12 comps
+- autocorrelation + std dev to figure out bad channels 	
+
+2 step filter
+	- upper bound is fixed
+	- disparity filter is after bootstrapping
+		- bootstrapping is a linear combination of 60 windows
+		- do bootstrapping per person
+	 	- calcultate number and weight of edges across windows and calc difference
+		- use the diff values (vary a lot), retain ones with 
+		- all written
+	- Use the bootstrapped copies to get the threshold to look under
+	- use disparity filter on windows
+	- averaging after filtering
+	
+- Don't do disparity filter for abstract, use jonathan's new code
+- set a random threshold, graphs sparsity, keep top 10% connections only
