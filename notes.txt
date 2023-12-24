@@ -81,3 +81,62 @@ NEW MEETING:
 	
 - Don't do disparity filter for abstract, use jonathan's new code
 - set a random threshold, graphs sparsity, keep top 10% connections only
+
+
+
+-Subject 202 treated same as 116
+
+12/6/23
+Action Items
+- Check what's slowing down the computations
+- HAL, apply delta over break
+- Dr.H wants submit to conf in february, EMBC
+- Automatic Bad Channel detection using autocorrelation
+- Clean up HAL workspace
+- Thresholding operations
+
+- Bootstrapping > disparity > 
+- Input : Graph, Output: thresholded graph
+- Make it builtin
+
+
+
+MEETING 12/19
+
+- Work on barebones 
+- Rerun the 2 participants with 50 components (117 EO and 116 EO)
+- Bad channel automation not a priority
+- Redo steps after double checking ICA
+
+- Global vs local results is a paper of its own, Graph theoretical analysis is it's own thing
+- Split the Paper?
+- Start with Functional Connectivity, then Graph Theoretical
+
+Question about functional connectivity analysis:
+ - dPLI gives directional information
+ - problem with using just dPLI, is that with resting state data, we don't get much room
+   to interpret reversal of directional talking.
+ - questions about general organizaiton of the brain, how do nodes talk to each other? Not 
+   what we are doing. 
+ - We need to answer a question about tai-chi practitioners? The change in directionality 
+   cannot be interpreted in the context of data we have. Reverse Inference flaw in resting state data. 
+ - Characterization and understanding relationships. Dynamical nature of EEG to look at funct connectivity, 
+   
+
+fMRI looks at changes in blood flow in the brain, EEG much more 'true' to activity.
+Explore amplitude coupling. How there patterns of co-activating. Characterize the
+nature of these relationship. Main result is huge changes in node behaviour in different modes
+
+Dipole's Hilbert transform of the amplitude of the envelope of coupling. 
+Weighted PLI over dPLI: how strongly node i is leading/lagging node j.
+What is the strength of coupling in phases vs amplitude? Bands and binding
+
+
+Coupling in amplitude vs phase changes in resting and active states.
+
+- Change it so that using one person's edges across windows, do that for 
+  all subject's edges across all windows
+
+
+
+4XX: older adults TC practitioners; 1XX: young adults; 2XX: older adults non-TC practitioners
