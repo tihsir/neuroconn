@@ -17,16 +17,16 @@ files_out = '../data/out/subjects/'
 
 
 # loading list of subject names from txt file
-names = open("./names.txt", "r")
+names = open("../batch/names.txt", "r")
 subject_list = names.read().split('\n')
 modes = ['EC', 'EO']
 
 
 all_graphs = []
 
-for subject in subject_list:
+for subject in subject_list[:2]:
     for mode in modes:
-        tc_file = files_out + subject +'/'+mode +'/'+'_time_courses.npy'
+        tc_file = files_out + subject +'/'+mode +'/'+subject+'_label_time_courses.npy'
         label_time_courses = np.load(tc_file)
         sampling_rate = 512  # in Hz
         window_length_seconds = 1  # desired window length in seconds
