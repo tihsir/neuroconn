@@ -140,3 +140,13 @@ Coupling in amplitude vs phase changes in resting and active states.
 
 
 4XX: older adults TC practitioners; 1XX: young adults; 2XX: older adults non-TC practitioners
+
+
+Meeting 01/04 
+- Phase coupling
+
+- Pearson correlation between the envelope of amplitudes
+
+- Check how final values/result change across different thresholds used
+- :w
+

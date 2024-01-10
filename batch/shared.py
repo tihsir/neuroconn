@@ -259,3 +259,63 @@ average_region_correlations = np.mean(np.array(thresholded_region_correlations),
 ​
 # plt.tight_layout()
 # plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Plot the ICA components as topographies in descending order of component probabilities (run until #blinks)
+print("Plotting the ICA components as topographies in descending order...")
+n_components_actual = ica.n_components_
+
+# Selecting ICA components automatically using ICLabel
+ic_labels = label_components(original_EEG, ica, method="iclabel")
+component_labels = ic_labels["labels"]  # Extract the labels
+component_probabilities = ic_labels["y_pred_proba"]  # Extract the probabilities
+
+# Combine indices, labels, and probabilities into a single list
+components = list(zip(range(n_components_actual), component_labels, component_probabilities))
+
+# Sort components in descending order based on probabilities
+sorted_components = sorted(components, key=lambda x: x[2], reverse=True)
+
+# Initialize a counter for numbering the components
+component_number = 0
+
+for i in range(0, n_components_actual, 62):
+    # Determine the range of components to plot
+    component_range = sorted_components[i:min(i + 62, n_components_actual)]
+
+    # Extract the indices for plotting
+    component_indices = [comp[0] for comp in component_range]
+
+    # Plot the components
+    fig = ica.plot_components(picks=component_indices, ch_type='eeg', inst=original_EEG)
+
+    # Set titles for each axis based on the sorted labels, probabilities, and numbering
+    for ax, comp in zip(fig.axes, component_range):
+        label, prob = comp[1], comp[2]
+        # Change the color of the probability if it is at or above 70%
+        prob_str = f"{prob:.2f}"
+        if prob >= 0.70:
+            ax.set_title(f"{component_number}: {label}  ({prob_str})",
+                         color='red')  # Underline and change color
+        else:
+            ax.set_title(f"{component_number}: {label} ({prob_str})")
+        component_number += 1  # Increment the component number for the next plot
+
+    # blinks
+    ica.plot_overlay(original_EEG, exclude=[0], picks="eeg")
