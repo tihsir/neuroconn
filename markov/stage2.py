@@ -101,5 +101,5 @@ for subject in subject_list:
         # Find the optimal number of states
         optimal_states = state_numbers[np.argmin(free_energies)]
         print(f"Optimal number of states based on Varitional Bayes for Subject {subject}: {optimal_states}")
-        optimal_states_arr.append({subject:optimal_states})
+        optimal_states_arr.append({subject:optimal_states})     
 
