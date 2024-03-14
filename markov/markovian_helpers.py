@@ -73,3 +73,116 @@ def apply_orthogonalization(downsampled_label_time_courses):
     return regularized_data
 
 
+
+class VariationalHMM:
+    def __init__(self, n_states, data):
+        self.n_states = n_states
+        self.data = data
+
+        # Initialize priors (adjust if you have prior knowledge)
+        self.init_distrib = np.ones(n_states) / n_states
+        self.trans_distrib = np.ones((n_states, n_states)) / n_states
+        self.emission_means = np.random.randn(n_states, data.shape[1])
+        self.emission_covs = np.ones((n_states, data.shape[1]))
+
+    def elbo(self, q):  # Evidence Lower Bound
+
+        # Expected log-likelihood: This measures how well the model with its approximate posterior distribution q explains the observed data
+        expected_log_likelihood = 0
+        for t in range(len(self.data)):
+            for i in range(self.n_states):
+                expected_log_likelihood += q[i, t] * self._emission_logprob(self.data[t], i)
+
+        # Entropy of the approximate posterior: Measures the uncertainty in our approximate posterior distribution q
+        entropy_q = 0
+        for t in range(len(self.data)):
+            for i in range(self.n_states):
+                entropy_q -= q[i, t] * np.log(q[i, t] + 1e-10)
+
+        # KL Divergence (between approximate and true posterior): This term penalizes the divergence of our approximation q from the true, intractable posterior distribution over model parameters
+        kl_divergence = 0
+        for t in range(len(self.data)):
+            for i in range(self.n_states):
+                kl_divergence += q[i, t] * np.log(np.maximum(q[i, t], 1e-10) / q[i, t])  # Using q as an approximation
+
+                return expected_log_likelihood + entropy_q - kl_divergence
+
+    # Free energy = -ELBO (expected log-likelihood - Kl divergence)
+    def free_energy(self, q):
+        return -self.elbo(q)
+
+    def fit(self, max_iter=100):
+        q = None  # Initialize q to None
+        for _ in range(max_iter):
+            # E-step: Update q(z) using current model parameters
+            q = self._e_step()
+
+            # M-step: Update model parameters using current q(z)
+            self._m_step(q)
+
+            #print(f"ELBO: {self.elbo(q)}")  # Commented out to avoid cluttering the output
+        return q  # Return the final q after fitting
+
+    @staticmethod  # Add this line
+    def normalize_logprobs(log_probs):
+        max_log_prob = np.max(log_probs)
+        return log_probs - max_log_prob - np.log(np.sum(np.exp(log_probs - max_log_prob)))
+
+    def _e_step(self):
+        log_likelihoods = np.zeros((self.n_states, len(self.data)))
+
+        # Forward Pass (Calculate alphas in log domain)
+        for t in range(len(self.data)):
+            for i in range(self.n_states):
+                log_lik = self._emission_logprob(self.data[t], i)  # Log of emission probability
+                log_likelihoods[i, t] = log_lik + (np.log(self.init_distrib[i]) if t == 0
+                                                   else np.logaddexp.reduce(
+                    log_likelihoods[:, t - 1] + np.log(self.trans_distrib[:, i])))
+
+        # Backward Pass (Calculate betas in log domain)
+        log_betas = np.zeros((self.n_states, len(self.data)))
+        log_betas[:, -1] = 0  # Initialize in log-domain
+
+        for t in reversed(range(len(self.data) - 1)):
+            for i in range(self.n_states):
+                for j in range(self.n_states):
+                    log_betas[i, t] = np.logaddexp(log_betas[i, t], log_betas[j, t + 1] + np.log(
+                        self.trans_distrib[i, j]) + self._emission_logprob(self.data[t + 1], j))
+
+
+        # Store approximate posteriors for all time steps
+        q = np.zeros((self.n_states, len(self.data)))
+        for t in range(len(self.data)):
+            q[:, t] = np.exp(log_likelihoods[:, t] + log_betas[:, t] - self.normalize_logprobs(
+                log_likelihoods[:, t] + log_betas[:, t]))
+
+        return q
+
+    def _emission_logprob(self, x, state_idx):
+        # Calculation of log p(x|z) based on Gaussian emission
+        return multivariate_normal.logpdf(x, mean=self.emission_means[state_idx],
+                                          cov=np.diag(self.emission_covs[state_idx]))
+
+    def _m_step(self, q):
+        # Update initial distribution
+        self.init_distrib = q[:, 0]  # Posteriors at t=0
+
+        # Update transition probabilities
+        expected_transitions = np.zeros((self.n_states, self.n_states))
+        for t in range(len(self.data) - 1):
+            for i in range(self.n_states):
+                for j in range(self.n_states):
+                    expected_transitions[i, j] += q[i, t] * self.trans_distrib[i, j] * self._emission_logprob(
+                        self.data[t + 1], j) * q[j, t + 1]
+        self.trans_distrib = expected_transitions / expected_transitions.sum(axis=1, keepdims=True)
+
+        # Update emission means
+        for i in range(self.n_states):
+            self.emission_means[i] = np.sum([q[i, t] * self.data[t] for t in range(len(self.data))], axis=0) / np.sum(
+                q[i])
+
+        # Update emission covariances
+        for i in range(self.n_states):
+            diff = self.data - self.emission_means[i]
+            # Corrected line: Initialize emission covariances to identity matrices
+            self.emission_covs = np.array([np.eye(self.data.shape[1]) for _ in range(self.n_states)])
