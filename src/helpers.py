@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import hilbert
 from scipy.stats import pearsonr
+import igraph
 import networkx as nx
 
 def compute_amplitude_coupling(data, labels):
