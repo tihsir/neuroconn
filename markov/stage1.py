@@ -62,6 +62,6 @@ for subject in subject_list:
 
         # Orthogonalization
         orthogonalized_data = apply_orthogonalization(downsampled_label_time_courses)
-        np.save(orthogonalized_data, dir_out + "orth.npy")
+        np.save( dir_out + "orth.npy", orthogonalized_data)
 
 
