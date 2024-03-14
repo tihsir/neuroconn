@@ -10,6 +10,7 @@ from scipy.signal import hilbert  # For Hilbert transform
 from scipy.signal import resample, butter, lfilter # For downsampling
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from scipy.stats import multivariate_normal
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch

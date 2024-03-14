@@ -36,7 +36,7 @@ for subject in subject_list:
         dir_in = files_in + subject + '/' + mode + '/'
         dir_out = files_out + subject +"/" + mode +'/'
 
-         orthogonalized_data = np.load( dir_out + "orth.npy")
+        orthogonalized_data = np.load( dir_out + "orth.npy")
 
 
         # Step 2: Determine the Optimal Number of States for the HMM
