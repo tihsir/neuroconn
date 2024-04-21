@@ -91,7 +91,7 @@ spec = [
 
 
 # @jitclass
-@jitclass(spec)
+# @jitclass(spec)
 class VariationalHMM:
     
     def __init__(self, n_states, data):
@@ -140,9 +140,11 @@ class VariationalHMM:
         for _ in range(max_iter):
             print("loop")
             # E-step: Update q(z) using current model parameters
+            print("Running e step")
             q = self._e_step()
 
             # M-step: Update model parameters using current q(z)
+            print("Running m step")
             self._m_step(q)
 
             print(f"ELBO: {self.elbo(q)}")  # Commented out to avoid cluttering the output

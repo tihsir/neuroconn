@@ -22,7 +22,7 @@ from numba import njit, jit
 from numba.experimental import jitclass
 
 # Downsampling with Anti-Aliasing Filtering
-@njit
+@jit
 def downsample_with_filtering(data, original_fs, target_fs):
     """Downsamples data with an anti-aliasing filter."""
     # Design an anti-aliasing lowpass filter
@@ -43,7 +43,7 @@ def downsample_with_filtering(data, original_fs, target_fs):
 
     return downsampled_data
 
-@njit
+@jit
 def apply_orthogonalization(downsampled_label_time_courses):
     # Calculate the analytic signal for each epoch/sample
     analytic_signal = hilbert(downsampled_label_time_courses, axis=2)  # Apply Hilbert transform along the correct axis
@@ -83,7 +83,7 @@ def apply_orthogonalization(downsampled_label_time_courses):
 ###################### BREAKING DOWN THE VARIATIONAL HMM CLASS INTO INDIVIDUAL FUNCTIONS
 
 
-@njit
+@jit
 def elbo(n_states, data, init_distrib, trans_distrib, emission_means, emission_covs, q):
     expected_log_likelihood = 0
     entropy_q = 0
@@ -105,12 +105,12 @@ def elbo(n_states, data, init_distrib, trans_distrib, emission_means, emission_c
 
 
 # Free energy = -ELBO (expected log-likelihood - Kl divergence)
-@njit
+@jit
 def free_energy(n_states, data, init_distrib, trans_distrib, emission_means, emission_covs, q):
     return -elbo(n_states, data, init_distrib, trans_distrib, emission_means, emission_covs, q)
 
 
-@njit
+@jit
 def normalize_logprobs(log_probs):
     max_log_prob = np.max(log_probs)
     return log_probs - max_log_prob - np.log(np.sum(np.exp(log_probs - max_log_prob)))
@@ -132,7 +132,7 @@ def fit(n_states, data, max_iter=100):
     return q
 
 
-@njit(forceobj = True)
+@jit
 def e_step(n_states, data, init_distrib, trans_distrib, emission_means, emission_covs, q):
     log_likelihoods = np.zeros((n_states, len(data)))
 
@@ -158,11 +158,12 @@ def e_step(n_states, data, init_distrib, trans_distrib, emission_means, emission
             log_likelihoods[:, t] + log_betas[:, t]))
 
     return q
-@njit
+
+@jit(forceobj = True)
 def _emission_logprob(x, emission_means, emission_covs, state_idx):
     return multivariate_normal.logpdf(x, mean=emission_means[state_idx],cov=np.diag(emission_covs[state_idx]))
 
-@njit
+@jit
 def m_step(n_states, data, init_distrib, trans_distrib, emission_means, emission_covs, q):
     expected_transitions = np.zeros((n_states, n_states))
 
