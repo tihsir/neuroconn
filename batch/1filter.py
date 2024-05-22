@@ -53,7 +53,9 @@ ch_map_fix = {'Ch1': 'Fp1', 'Ch2': 'Fz', 'Ch3': 'F3', 'Ch4': 'F7', 'Ch5': 'LHEye
               'Ch55': 'CP4', 'Ch56': 'TP8', 'Ch57': 'C6', 'Ch58': 'C2', 'Ch59': 'FC4', 'Ch60': 'FT8',
               'Ch61': 'F6', 'Ch62': 'F2', 'Ch63': 'AF4', 'Ch64': 'RVEye'}
 
-for subject in subject_list:
+def process_subject(subject, modes=['EC', 'EO'], files_in='../data/in/subjects/', files_out='../data/out/subjects/', montage_path=r"../data/in/MFPRL_UPDATED_V2.sfp", ch_map=None, ch_map_fix=None):
+    if ch_map is None or ch_map_fix is None:
+        raise ValueError("ch_map and/or ch_map_fix not provided")
     for mode in modes:
         # defining paths for current subject
 
