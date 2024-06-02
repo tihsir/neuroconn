@@ -65,7 +65,7 @@ fs_dir = '../data/in/fsaverage'
 fname = os.path.join(fs_dir, "bem", "fsaverage-ico-5-src.fif")
 src = mne.read_source_spaces(fname, patch_stats=False, verbose=None)
 
-def process_subject_d(subject, modes=['EC','EO'], files_in='../data/in/subjects/', files_out='../data/out/subjects/', montage, trans, src, bem):
+def process_subject_d(subject, modes=['EC','EO'], files_in='../data/in/subjects/', files_out='../data/out/subjects/'):
     for mode in modes:
         print(subject, mode)
         # defining paths for current subject
