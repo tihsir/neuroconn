@@ -73,7 +73,7 @@ ch_map = {'Ch1': 'Fp1', 'Ch2': 'Fz', 'Ch3': 'F3', 'Ch4': 'F7', 'Ch5': 'LHEye', '
           'Ch55': 'CP4', 'Ch56': 'TP8', 'Ch57': 'C6', 'Ch58': 'C2', 'Ch59': 'FC4', 'Ch60': 'FT8',
           'Ch61': 'F6', 'Ch62': 'F2', 'Ch63': 'AF4', 'Ch64': 'RVEye'}
 
-def process_subject_c(subject, modes=['EC','EO'], files_in='../data/in/subjects/', files_out='../data/out/subjects/', montage, ch_map, trans, src, bem):
+def process_subject_c(subject, modes=['EC','EO'], files_in='../data/in/subjects/', files_out='../data/out/subjects/'):
     for mode in modes:
         print(subject, mode)
         # defining paths for current subject
